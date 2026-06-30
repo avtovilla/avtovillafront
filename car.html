@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали автомобиля | AvtoVilla</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- СТИЛИ ПРЕМИАЛЬНОГО СЛАЙДЕРА ГАЛЕРЕИ --- */
+        .premium-gallery-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto 15px auto;
+            overflow: hidden;
+            border-radius: 16px;
+            background: #0d1117;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .gallery-track-wrapper {
+            position: relative;
+            width: 100%;
+            height: 520px;
+        }
+
+        .gallery-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.02);
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .gallery-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(10, 12, 16, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-nav-arrow:hover {
+            background: #0074d9;
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .gallery-nav-arrow.btn-prev { left: 25px; }
+        .gallery-nav-arrow.btn-next { right: 25px; }
+
+        /* --- СТИЛИ ПАНЕЛИ ДЕЙСТВИЙ --- */
+        .action-bar-container { width: 100%; background: #06080c; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .action-bar { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-around; align-items: center; padding: 5px 10px; }
+        .action-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #8a99ad; gap: 6px; transition: color 0.3s; cursor: pointer; }
+        .action-item:hover { color: #fff; }
+        .action-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
+        .action-item:hover .action-icon { transform: scale(1.1); }
+        .icon-2gis { background: #28a745; }
+        .icon-wa { background: #25d366; }
+        .icon-discount { background: #dc3545; }
+        .icon-phone { background: #0074d9; }
+        .action-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .action-divider { width: 1px; height: 30px; background: rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-container-fluid">
+            <a href="index.html" class="logo-link"><img src="logo.jpg" alt="AvtoVilla" class="header-logo"></a>
+            <nav class="nav-menu">
+                <a href="index.html#catalog" class="nav-link">Модельный ряд</a>
+                <a href="#" class="nav-link">Кредитование</a>
+                <a href="socials.html" class="nav-link">Наши соцсети</a>
+            </nav>
+            <div class="header-contacts">
+                <a href="tel:+77005006310" class="phone-link">+7 700 500 6310</a>
+                <button class="btn-callback" type="button">Заказать звонок</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="action-bar-container">
+        <div class="action-bar">
+            <a href="https://2gis.kz/shymkent/geo/70000001097871606" target="_blank" class="action-item">
+                <div class="action-icon icon-2gis"><svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+                <span class="action-text">МАРШРУТ</span>
+            </a>
+            <div class="action-divider"></div>
+            <a href="#" class="action-item" id="detail-action-wa"><div class="action-icon icon-wa"><svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M12.031 0C5.405 0 0 5.394 0 12.02c0 2.122.55 4.19 1.595 6.014L.014 23.98l6.09-1.59c1.783 1 3.8 1.528 5.918 1.528h.005c6.626 0 12.025-5.395 12.025-12.02C24.053 5.394 18.657 0 12.03 0zM12 21.944h-.003c-1.803 0-3.568-.485-5.114-1.4l-.367-.217-3.804.996.994-3.71-.237-.378c-1.006-1.597-1.536-3.456-1.536-5.37C1.933 6.47 6.4 2.015 11.967 2.015c5.567 0 10.035 4.455 10.035 10.01 0 5.556-4.468 10.013-10.002 10.013v-.094zm5.498-7.514c-.302-.15-1.785-.88-2.062-.98-.277-.1-.478-.15-.68.15-.2.302-.782.98-.958 1.18-.176.202-.353.228-.655.077-1.637-.803-2.92-1.92-3.957-3.418-.124-.177-.015-.273.136-.425.135-.136.302-.352.453-.528.15-.176.2-.302.302-.503.102-.202.05-.378-.025-.528-.077-.15-.68-1.638-.93-2.242-.244-.59-.492-.51-.68-.52h-.58c-.202 0-.528.076-.804.378-.276.302-1.055 1.03-1.055 2.512 0 1.482 1.08 2.915 1.232 3.116.15.202 2.126 3.245 5.15 4.547 2.02 0.867 2.766.93 3.8.78.68-.1 1.786-.73 2.038-1.433.25-.703.25-1.306.175-1.433-.075-.126-.276-.202-.58-.353z"/></svg></div><span class="action-text">WHATSAPP</span></a>
+            <div class="action-divider"></div>
+            <a href="#" class="action-item" id="detail-action-benefit"><div class="action-icon icon-discount"><svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg></div><span class="action-text">ВЫГОДА</span></a>
+            <div class="action-divider"></div>
+            <a href="tel:+77780505848" class="action-item"><div class="action-icon icon-phone"><svg viewBox="0 0 24 24" width="20" height="22" fill="white"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.03 21c.76 0 .98-.66.98-1.21v-3.42c0-.54-.45-.99-.99-.99z"/></svg></div><span class="action-text">ПОЗВОНИТЬ</span></a>
+        </div>
+    </div>
+
+    <main class="container" style="padding-top: 30px; padding-bottom: 60px;">
+        <a href="index.html" class="back-link" style="display: inline-block; margin-bottom: 25px; color: #0074d9; text-decoration: none; font-weight: bold; font-size: 1.1rem;">← Назад</a>
+        <div id="car-details"><p style="text-align:center; padding:50px; color: white;">Загрузка спецификации...</p></div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container"><p>&copy; 2026 AvtoVilla. Все права защищены.</p></div>
+    </footer>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Забронировать авто</h2>
+            <form id="callback-form">
+                <input type="text" placeholder="Ваше имя" required>
+                <input type="tel" placeholder="Ваш телефон" required>
+                <button type="submit" class="btn-primary" style="width:100%;">Отправить</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="success-notification" style="display: none !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 99999 !important; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;">
+        <div style="background: #141822; padding: 40px; border-radius: 16px; text-align: center; border: 1px solid #0074d9; max-width: 400px; width: 90%;">
+            <div style="font-size: 50px; color: #25d366; margin-bottom: 20px;">✓</div>
+            <h2 style="color: #fff; margin-bottom: 15px;">Спасибо за заявку!</h2>
+            <p style="color: #8e94a0; line-height: 1.5;">Мы получили ваш запрос. Менеджер свяжется с вами в ближайшее время.</p>
+            <button onclick="closeNotification()" style="margin-top: 25px; padding: 12px 30px; background: #0074d9; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; border: none;">Понятно</button>
+        </div>
+    </div>
+
+    <script>
+        function closeNotification() {
+            const n = document.getElementById('success-notification');
+            n.style.opacity = '0';
+            setTimeout(() => { n.style.display = 'none'; }, 300);
+        }
+        document.querySelector('.close-modal').onclick = () => document.getElementById('modal').style.display = 'none';
+    </script>
+    <script src="car-loader.js"></script>
+</body>
+</html>

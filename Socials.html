@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Наши соцсети | AvtoVilla</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .social-container { padding: 150px 20px; text-align: center; }
+        .social-grid { display: flex; justify-content: center; gap: 30px; margin-top: 50px; }
+        .social-btn { padding: 20px 40px; background: var(--card-bg); border: 1px solid var(--accent-blue); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+        .social-btn:hover { background: var(--accent-blue); }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-container-fluid">
+            <a href="index.html" class="logo-link"><img src="logo.jpg" alt="AvtoVilla" class="header-logo"></a>
+            <nav class="nav-menu">
+                <a href="index.html#catalog" class="nav-link">Модельный ряд</a>
+                <a href="#" class="nav-link">Кредитование</a>
+                <a href="socials.html" class="nav-link active">Наши соцсети</a>
+            </nav>
+            <div class="header-contacts">
+                <a href="tel:+77005006310" class="phone-link">+7 700 500 6310</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="social-container">
+        <h1>Мы в социальных сетях</h1>
+        <p style="color: var(--text-muted); margin-top: 10px;">Следите за нашими обновлениями, новинками и акциями!</p>
+        <div class="social-grid">
+            <a href="https://instagram.com/avtovilla" class="social-btn" target="_blank">Instagram</a>
+            <a href="https://tiktok.com/@avtovilla" class="social-btn" target="_blank">TikTok</a>
+            <a href="https://youtube.com/@avtovilla" class="social-btn" target="_blank">YouTube</a>
+        </div>
+    </main>
+</body>
+</html>
