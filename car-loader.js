@@ -110,7 +110,7 @@ function renderCar(car) {
     }
 
     if (collectedImages.length === 0) {
-        let singleImgUrl = 'https://via.placeholder.com/800x500?text=AvtoVilla';
+        let singleImgUrl = 'placeholder-car.jpg';
         if (data.image && data.image.url) {
             singleImgUrl = `${STRAPI_URL}${data.image.url}`;
         } else if (data.image && data.image.data && data.image.data.attributes && data.image.data.attributes.url) {
@@ -150,35 +150,35 @@ function renderCar(car) {
             <div class="car-info-right-block">
                 <h1 class="car-detail-title">${title}</h1>
 
-                <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px;">
-                    <div style="margin-bottom: 12px;">
-                        <span style="color: #8a99ad; font-size: 0.9rem; display: block; margin-bottom: 2px;">Цена в наличии</span>
-                        <strong style="font-size: 1.9rem; color: #ffffff;">от ${formattedBase} ₸</strong>
+                <div class="detail-price-card">
+                    <div class="detail-price-block">
+                        <span class="detail-price-label">Цена в наличии</span>
+                        <strong class="detail-price-value">от ${formattedBase} ₸</strong>
                     </div>
-                    <div>
-                        <span style="color: #8a99ad; font-size: 0.9rem; display: block; margin-bottom: 2px;">В кредит ежемесячно</span>
-                        <strong style="font-size: 1.45rem; color: #0074d9;">от ${formattedMonthly} ₸ / мес</strong>
+                    <div class="detail-price-block">
+                        <span class="detail-price-label">В кредит ежемесячно</span>
+                        <strong class="detail-price-value accent">от ${formattedMonthly} ₸ / мес</strong>
                     </div>
                 </div>
 
-                <div class="gallery-bullets" style="display: ${isMultiImage ? 'flex' : 'none'}; justify-content: flex-start; margin-bottom: 25px;">
+                <div class="gallery-bullets" style="display: ${isMultiImage ? 'flex' : 'none'};">
                     ${bulletsMarkup}
                 </div>
 
-                <h2 style="font-size: 1.5rem; margin-bottom: 18px; color: #fff; border-left: 4px solid #0074d9; padding-left: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Характеристики</h2>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
-                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.03);">
-                        <span style="color: #65758c; font-size: 0.8rem; text-transform: uppercase; display: block;">Год выпуска</span>
-                        <strong style="font-size: 1.1rem;">${year}</strong>
+                <h2 class="detail-heading">Характеристики</h2>
+                <div class="spec-grid">
+                    <div class="spec-card">
+                        <span class="spec-label">Год выпуска</span>
+                        <strong class="spec-value">${year}</strong>
                     </div>
-                    <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.03);">
-                        <span style="color: #65758c; font-size: 0.8rem; text-transform: uppercase; display: block;">Двигатель</span>
-                        <strong style="font-size: 1.1rem;">${engine}</strong>
+                    <div class="spec-card">
+                        <span class="spec-label">Двигатель</span>
+                        <strong class="spec-value">${engine}</strong>
                     </div>
                 </div>
 
-                <h2 style="font-size: 1.5rem; margin-bottom: 18px; color: #fff; border-left: 4px solid #0074d9; padding-left: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Кредитный калькулятор</h2>
-                <div class="calculator-card" style="margin-bottom: 30px;">
+                <h2 class="detail-heading">Кредитный калькулятор</h2>
+                <div class="calculator-card">
                     <div class="calc-row">
                         <div class="calc-label-wrapper">
                             <span class="calc-label">Первоначальный взнос</span>
@@ -193,9 +193,9 @@ function renderCar(car) {
                         </div>
                         <input type="range" id="slider-term" class="calc-slider" min="12" max="84" step="12" value="60">
                     </div>
-                    <div style="margin-top: 20px;">
-                        <span class="calc-label">Платеж:</span>
-                        <strong style="font-size: 1.8rem; color: #0074d9; display: block;" id="calc-monthly-payment-result">0 ₸</strong>
+                    <div class="calc-result">
+                        <span class="calc-label">Платёж</span>
+                        <strong class="calc-result-value" id="calc-monthly-payment-result">0 ₸</strong>
                     </div>
                 </div>
 
@@ -203,9 +203,9 @@ function renderCar(car) {
                     <button id="btn-order-car-fixed">Забронировать</button>
                 </div>
 
-                <div style="margin-top: 40px;">
-                    <h2 style="font-size: 1.5rem; margin-bottom: 18px; color: #fff; border-left: 4px solid #0074d9; padding-left: 12px; text-transform: uppercase;">Обзор</h2>
-                    <div class="description" style="color: #b1bdcf; line-height: 1.6;">${descriptionHtml}</div>
+                <div class="description-block">
+                    <h2 class="detail-heading">Обзор</h2>
+                    <div class="description">${descriptionHtml}</div>
                 </div>
             </div>
         </div>
@@ -248,12 +248,22 @@ function initCreditCalculator(carPrice) {
 
     const currencyFormatter = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
 
+    function fillSliderTrack(slider) {
+        const min = parseFloat(slider.min);
+        const max = parseFloat(slider.max);
+        const val = parseFloat(slider.value);
+        const percent = ((val - min) / (max - min)) * 100;
+        slider.style.background = `linear-gradient(90deg, #0074d9 0%, #00f7ff ${percent}%, rgba(255,255,255,0.08) ${percent}%, rgba(255,255,255,0.08) 100%)`;
+    }
+
     function calculateCredit() {
         const percent = parseInt(sliderDownpayment.value);
         const termMonths = parseInt(sliderTerm.value);
         const downPaymentAmount = carPrice * (percent / 100);
         textDownpayment.innerText = `${currencyFormatter.format(downPaymentAmount)} ₸ (${percent}%)`;
         textTerm.innerText = `${termMonths} мес.`;
+        fillSliderTrack(sliderDownpayment);
+        fillSliderTrack(sliderTerm);
 
         const annualRate = 14;
         const monthlyRate = (annualRate / 12) / 100;
@@ -313,6 +323,16 @@ function initModalLogic(carTitle) {
             e.preventDefault();
             const name = callbackForm.querySelector('input[type="text"]').value;
             const phone = callbackForm.querySelector('input[type="tel"]').value;
+
+            const submitBtn = callbackForm.querySelector('button[type="submit"]');
+            const submitBtnOriginalText = submitBtn ? submitBtn.innerText : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.innerText = 'Отправка...';
+            }
+
             try {
                 await fetch(`${STRAPI_URL}/api/orders`, {
                     method: 'POST',
@@ -329,6 +349,13 @@ function initModalLogic(carTitle) {
                 callbackForm.reset();
             } catch (err) {
                 alert('Ошибка отправки.');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '';
+                    submitBtn.style.cursor = '';
+                    submitBtn.innerText = submitBtnOriginalText;
+                }
             }
         });
     }

@@ -1,4 +1,4 @@
-const STRAPI_URL = 'https://avtovillashymkent.onrender.com';
+const STRAPI_URL = 'http://localhost:1337';
 
 // --- ЛОГИКА ЗАГРУЗКИ МАШИН ---
 async function fetchCars() {
@@ -41,13 +41,33 @@ function renderCars(cars) {
         const monthlyPrice = dataFields.monthly_price || 0;
         const carId = car.documentId || car.id || dataFields.documentId || dataFields.id;
 
-        let imageUrl = 'https://via.placeholder.com/600x400?text=AvtoVilla';
+        let imageUrl = 'placeholder-car.jpg';
+        let mediaWidth = null;
+        let mediaHeight = null;
+        let mediaMime = '';
+
         const imgObj = dataFields.image;
+        let mediaData = null;
         if (imgObj && imgObj.url) {
-            imageUrl = `${STRAPI_URL}${imgObj.url}`;
-        } else if (imgObj && imgObj.data && imgObj.data.attributes && imgObj.data.attributes.url) {
-            imageUrl = `${STRAPI_URL}${imgObj.data.attributes.url}`;
+            mediaData = imgObj;
+        } else if (imgObj && imgObj.data && imgObj.data.attributes) {
+            mediaData = imgObj.data.attributes;
         }
+
+        if (mediaData) {
+            imageUrl = `${STRAPI_URL}${mediaData.url}`;
+            mediaWidth = mediaData.width || null;
+            mediaHeight = mediaData.height || null;
+            mediaMime = mediaData.mime || '';
+        }
+
+        // Соотношение сторон конкретного файла. Если Strapi не отдал width/height — используем безопасный дефолт 4/3.
+        const aspectRatio = (mediaWidth && mediaHeight) ? `${mediaWidth} / ${mediaHeight}` : '4 / 3';
+        const isVideo = mediaMime.startsWith('video/');
+
+        const mediaMarkup = isVideo
+            ? `<video src="${imageUrl}" class="car-image" autoplay muted loop playsinline></video>`
+            : `<img src="${imageUrl}" alt="${title}" class="car-image" loading="lazy">`;
 
         const formatter = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
         const formattedBase = formatter.format(basePrice);
@@ -55,8 +75,8 @@ function renderCars(cars) {
 
         const cardHtml = `
             <a href="car.html?id=${carId}" class="car-card" onclick="localStorage.setItem('selectedCarId', '${carId}');">
-                <div class="car-image-container">
-                    <img src="${imageUrl}" alt="${title}" class="car-image">
+                <div class="car-image-container" style="aspect-ratio: ${aspectRatio};">
+                    ${mediaMarkup}
                 </div>
                 <div class="car-info">
                     <h3 class="car-title">${title}</h3>
@@ -123,12 +143,18 @@ document.addEventListener('submit', async (e) => {
     const phoneInput = form.querySelector('input[type="tel"]')?.value || 'Не указано';
     const carTitle = modalTitle ? modalTitle.innerText : 'Выбор из модального окна';
 
-    const botToken = '8920165983:AAHdRcjgIRsa8fEMYCdLrYV3IfRZXq9FoGA';
-    const chatId = '8923508472';
-    const textMessage = `🔔 Новая заявка!\n🚗 Авто: ${carTitle}\n👤 Имя: ${nameInput}\n📱 Тел: ${phoneInput}`;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitBtnOriginalText = submitBtn ? submitBtn.innerText : '';
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.style.cursor = 'not-allowed';
+        submitBtn.innerText = 'Отправка...';
+    }
 
     try {
-        // 1. Отправка в Strapi
+        // Сохраняем заявку в Strapi. Уведомление в Telegram отправляет сам бэкенд
+        // (lifecycle-хук коллекции Orders) — токен бота на фронтенде больше не хранится.
         const strapiResponse = await fetch(`${STRAPI_URL}/api/orders`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -137,26 +163,23 @@ document.addEventListener('submit', async (e) => {
 
         if (!strapiResponse.ok) throw new Error('Ошибка сохранения в базе Strapi');
 
-        // 2. Отправка в Telegram (Разрываем слэши, чтобы PyCharm не ломал подсветку кода)
-        const tgUrl = "https:/" + "/api.telegram.org/bot" + botToken + "/sendMessage?chat_id=" + chatId + "&text=" + encodeURIComponent(textMessage);
-        const tgResponse = await fetch(tgUrl);
-        const tgData = await tgResponse.json();
-
-        if (tgData.ok) {
-            console.log("Успешно отправлено в Telegram и Strapi!");
-            if (modal) modal.style.display = 'none';
-            if (successNotification) {
-                successNotification.style.display = 'flex';
-                successNotification.style.opacity = '1';
-                setTimeout(() => { successNotification.style.display = 'none'; }, 3000);
-            }
-            form.reset();
-        } else {
-            alert('Ошибка Telegram: ' + tgData.description);
+        if (modal) modal.style.display = 'none';
+        if (successNotification) {
+            successNotification.style.display = 'flex';
+            successNotification.style.opacity = '1';
+            setTimeout(() => { successNotification.style.display = 'none'; }, 3000);
         }
+        form.reset();
     } catch (err) {
-        console.error("Полная ошибка процесса:", err);
+        console.error("Ошибка отправки заявки:", err);
         alert('Ошибка при отправке заявки. Проверьте консоль F12.');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '';
+            submitBtn.style.cursor = '';
+            submitBtn.innerText = submitBtnOriginalText;
+        }
     }
 });
 

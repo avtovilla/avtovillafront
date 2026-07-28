@@ -16,7 +16,31 @@ button { cursor: pointer; border: none; outline: none; }
 .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: var(--accent-blue); transition: var(--transition-smooth); }
 .nav-link:hover::after, .nav-link.active::after { width: 100%; }
 .header-contacts { display: flex; align-items: center; gap: 25px; }
-.phone-link { color: #fff; text-decoration: none; font-weight: 700; font-size: 16px; }
+
+/* --- Кнопка «Контакты» с выпадающей панелью --- */
+.contacts-wrapper { position: relative; }
+.contacts-toggle-btn { display: flex; align-items: center; gap: 9px; background: transparent; color: #fff; border: 1px solid rgba(0, 247, 255, 0.25); padding: 11px 20px; border-radius: 6px; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.4px; transition: var(--transition-smooth); }
+.contacts-toggle-btn svg { flex-shrink: 0; }
+.contacts-toggle-btn:hover { background: rgba(0, 247, 255, 0.06); border-color: rgba(0, 247, 255, 0.5); box-shadow: 0 0 15px rgba(0, 247, 255, 0.15); }
+.contacts-wrapper.open .contacts-toggle-btn { background: var(--gradient-blue); color: #000; border-color: transparent; }
+
+.contacts-dropdown { position: absolute; top: calc(100% + 14px); right: 0; width: 300px; background: rgba(20, 24, 34, 0.98); backdrop-filter: blur(16px); border: 1px solid rgba(0, 247, 255, 0.15); border-radius: 14px; padding: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.55), 0 0 25px rgba(0,116,217,0.1); opacity: 0; visibility: hidden; transform: translateY(-10px); transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s; z-index: 1100; }
+.contacts-wrapper.open .contacts-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+
+.contacts-dropdown-item { display: flex; align-items: center; gap: 13px; padding: 11px 10px; border-radius: 9px; text-decoration: none; color: var(--text-main); transition: var(--transition-smooth); }
+.contacts-dropdown-item:hover { background: rgba(255,255,255,0.05); }
+.contacts-dropdown-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.contacts-dropdown-icon.icon-phone { background: linear-gradient(135deg, #0074d9, #00537a); }
+.contacts-dropdown-icon.icon-wa { background: linear-gradient(135deg, #25D366, #128C7E); }
+.contacts-dropdown-label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.contacts-dropdown-value { display: block; font-size: 14.5px; font-weight: 700; margin-top: 1px; }
+.dropdown-callback-btn { width: 100%; margin-top: 8px; padding: 12px 0; border-radius: 8px; }
+
+@media (max-width: 480px) {
+    .contacts-toggle-btn span { display: none; }
+    .contacts-toggle-btn { padding: 10px; }
+    .contacts-dropdown { width: 260px; right: -10px; }
+}
 /* --- КНОПКИ --- */
 .btn-callback { background: transparent; color: #fff; border: 1px solid rgba(0, 247, 255, 0.3); padding: 10px 22px; border-radius: 4px; font-weight: 600; font-size: 12px; text-transform: uppercase; transition: var(--transition-smooth); box-shadow: 0 0 10px rgba(0, 247, 255, 0.05); }
 .btn-callback:hover { background: var(--gradient-blue); color: #000; border-color: transparent; box-shadow: 0 0 20px rgba(0, 247, 255, 0.5); }
@@ -53,8 +77,8 @@ button { cursor: pointer; border: none; outline: none; }
 .cars-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
 .car-card { background: var(--card-bg); border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; border: 1px solid rgba(255, 255, 255, 0.02); transition: var(--transition-smooth); cursor: pointer; }
 .car-card:hover { transform: translateY(-8px); border-color: rgba(0, 247, 255, 0.2); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
-.car-image-container { width: 100%; height: 230px; background: #0f121a; overflow: hidden; position: relative; }
-.car-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+.car-image-container { width: 100%; aspect-ratio: 4 / 3; background: #0f121a; overflow: hidden; position: relative; }
+.car-image { width: 100%; height: 100%; object-fit: contain; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
 .car-card:hover .car-image { transform: scale(1.05); }
 .car-info { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
 .car-title { font-size: 24px; font-weight: 700; margin-bottom: 15px; color: #fff; }
@@ -85,9 +109,6 @@ button { cursor: pointer; border: none; outline: none; }
     .hero-section { height: 75vh !important; padding-top: 50px; }
     .hero-title { font-size: 28px !important; }
 
-    /* Убран номер телефона */
-    .phone-link { display: none; }
-
     .action-bar { overflow-x: auto; justify-content: flex-start; gap: 15px; }
     .action-item { flex: 0 0 auto; }
     .action-bar-container { bottom: 10px; width: 95%; }
@@ -110,12 +131,330 @@ button { cursor: pointer; border: none; outline: none; }
     .action-text { display: none; }
     .action-bar { justify-content: space-between; }
 }
+/* --- ВИТРИНА СОЦСЕТЕЙ (МОКАПЫ ТЕЛЕФОНОВ) --- */
+.social-showcase {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+.social-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.social-column.center { order: 2; }
+.social-column.left { order: 1; }
+.social-column.right { order: 3; }
+
+.phone-mockup {
+    display: block;
+    position: relative;
+    width: 190px;
+    aspect-ratio: 9 / 19.5;
+    border-radius: 30px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.55);
+    transition: var(--transition-smooth);
+    filter: saturate(0.85) brightness(0.88);
+    opacity: 0.88;
+}
+.phone-mockup.center {
+    width: 225px;
+    z-index: 2;
+    filter: none;
+    opacity: 1;
+    border-color: rgba(0, 247, 255, 0.2);
+    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 116, 217, 0.15);
+}
+.phone-mockup:hover {
+    transform: translateY(-8px) scale(1.02);
+    filter: none;
+    opacity: 1;
+    border-color: rgba(0, 247, 255, 0.35);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.65), 0 0 30px rgba(0, 247, 255, 0.25);
+}
+.phone-mockup::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 30px;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+    z-index: 4;
+}
+.phone-screen-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    background: #000;
+}
+
+.social-name-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 20px;
+    padding: 12px 26px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: var(--transition-smooth);
+}
+.social-name-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.social-name-btn:hover {
+    background: var(--gradient-blue);
+    color: #000;
+    border-color: transparent;
+    box-shadow: 0 8px 20px rgba(0, 247, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 900px) {
+    .social-showcase { gap: 18px; }
+    .phone-mockup { width: 145px; }
+    .phone-mockup.center { width: 175px; }
+    .social-name-btn { padding: 10px 16px; font-size: 11px; }
+}
+@media (max-width: 600px) {
+    .social-showcase { flex-direction: column; gap: 45px; }
+    .social-column.center { order: 1; }
+    .social-column.left { order: 2; }
+    .social-column.right { order: 3; }
+    .phone-mockup, .phone-mockup.center { width: 210px; }
+}
+
 /* --- ДЕТАЛЬНАЯ СТРАНИЦА --- */
-.car-full-view { display: flex; flex-wrap: wrap; gap: 40px; padding: 100px 20px 50px; }
-.premium-gallery-container { flex: 1 1 500px; background: var(--bg-dark); }
-.car-info-right-block { flex: 1 1 400px; display: flex; flex-direction: column; }
-.car-detail-title { font-size: 2.2rem; margin-bottom: 20px; }
-#btn-order-car-fixed { width: 100%; padding: 20px; background: var(--gradient-blue); font-size: 1.1rem; color: #000; font-weight: 700; text-transform: uppercase; border-radius: 4px; }
-.gallery-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: opacity 0.6s, visibility 0.6s; }
-.gallery-slide.active { opacity: 1; visibility: visible; }
+.car-full-view {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+    gap: 48px;
+    padding: 20px 20px 60px;
+    align-items: start;
+}
+.back-link { transition: var(--transition-smooth); }
+.back-link:hover { color: var(--accent-glow) !important; transform: translateX(-3px); display: inline-block; }
+
+/* --- Галерея --- */
+.premium-gallery-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #0d1117;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+@media (min-width: 901px) { .premium-gallery-container { position: sticky; top: 105px; } }
+.gallery-track-wrapper { position: relative; width: 100%; height: 520px; }
+.gallery-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transform: scale(1.02); transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1), visibility 0.6s cubic-bezier(0.4,0,0.2,1), transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+.gallery-slide.active { opacity: 1; visibility: visible; transform: scale(1); }
 .gallery-slide img { width: 100%; height: 100%; object-fit: contain; }
+.gallery-nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(10,12,16,0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 54px; height: 54px; border-radius: 50%; cursor: pointer; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; z-index: 5; transition: var(--transition-smooth); }
+.gallery-nav-arrow:hover { background: var(--accent-blue); transform: translateY(-50%) scale(1.08); box-shadow: 0 0 20px rgba(0, 247, 255, 0.3); }
+.gallery-nav-arrow.btn-prev { left: 20px; }
+.gallery-nav-arrow.btn-next { right: 20px; }
+.gallery-bullets { display: flex; gap: 8px; margin-bottom: 28px; }
+.gallery-bullet { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.18); cursor: pointer; transition: var(--transition-smooth); }
+.gallery-bullet:hover { background: rgba(255,255,255,0.4); }
+.gallery-bullet.active { background: var(--accent-glow); width: 24px; border-radius: 4px; box-shadow: 0 0 10px rgba(0, 247, 255, 0.5); }
+
+/* --- Правая колонка --- */
+.car-info-right-block { display: flex; flex-direction: column; }
+.car-detail-title { font-size: 2.1rem; font-weight: 800; margin-bottom: 22px; line-height: 1.2; }
+
+.detail-heading { font-size: 1.3rem; margin: 0 0 18px; color: #fff; border-left: 4px solid var(--accent-blue); padding-left: 14px; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; }
+
+/* Карточка цены */
+.detail-price-card { background: linear-gradient(160deg, rgba(0,116,217,0.08), rgba(255,255,255,0.02)); padding: 24px; border-radius: 14px; border: 1px solid rgba(0, 247, 255, 0.15); margin-bottom: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.45); }
+.detail-price-block + .detail-price-block { margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(255,255,255,0.1); }
+.detail-price-label { color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 4px; }
+.detail-price-value { font-size: 1.9rem; font-weight: 800; color: #fff; }
+.detail-price-value.accent { font-size: 1.45rem; color: var(--accent-glow); text-shadow: 0 0 20px rgba(0,247,255,0.25); }
+
+/* Сетка характеристик */
+.spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 34px; }
+.spec-card { background: rgba(255,255,255,0.02); padding: 16px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); transition: var(--transition-smooth); }
+.spec-card:hover { border-color: rgba(0, 247, 255, 0.2); transform: translateY(-2px); }
+.spec-label { color: #65758c; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 6px; }
+.spec-value { font-size: 1.1rem; font-weight: 700; color: #fff; }
+
+/* Кредитный калькулятор */
+.calculator-card { background: var(--card-bg); border: 1px solid rgba(0, 116, 217, 0.18); border-radius: 14px; padding: 28px; margin-bottom: 32px; box-shadow: 0 15px 35px rgba(0,0,0,0.45); }
+.calc-row { margin-bottom: 28px; }
+.calc-row:last-of-type { margin-bottom: 0; }
+.calc-label-wrapper { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; gap: 10px; }
+.calc-label { color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+.calc-value { color: #fff; font-weight: 700; font-size: 0.95rem; text-align: right; }
+
+.calc-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); outline: none; cursor: pointer; }
+.calc-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--gradient-blue); border: 2px solid #0a0c10; box-shadow: 0 0 12px rgba(0,247,255,0.55), 0 2px 6px rgba(0,0,0,0.5); transition: transform 0.2s; }
+.calc-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.calc-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--gradient-blue); border: 2px solid #0a0c10; box-shadow: 0 0 12px rgba(0,247,255,0.55); cursor: pointer; }
+.calc-slider::-moz-range-track { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); }
+
+.calc-result { margin-top: 26px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.calc-result-value { font-size: 1.85rem; color: var(--accent-glow); font-weight: 800; text-shadow: 0 0 20px rgba(0,247,255,0.3); }
+
+.car-btn-submit-container { margin-bottom: 10px; }
+#btn-order-car-fixed { width: 100%; padding: 20px; background: var(--gradient-blue); font-size: 1.1rem; color: #000; font-weight: 700; text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: var(--transition-smooth); box-shadow: 0 8px 22px rgba(0, 116, 217, 0.35); }
+#btn-order-car-fixed:hover { box-shadow: 0 0 28px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
+
+.description-block { margin-top: 44px; }
+.description { color: #b1bdcf; line-height: 1.7; }
+
+@media (max-width: 900px) {
+    .car-full-view { grid-template-columns: 1fr; padding: 15px 15px 50px; gap: 30px; }
+    .gallery-track-wrapper { height: 320px; }
+    .car-detail-title { font-size: 1.6rem; }
+    .calculator-card, .detail-price-card { padding: 20px; }
+}
+
+/* --- СТРАНИЦА КРЕДИТОВАНИЯ --- */
+.credit-hero { padding: 150px 20px 20px; text-align: center; }
+.credit-hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 14px; }
+.credit-hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 640px; margin: 0 auto; }
+
+.bank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 26px; padding: 50px 20px 100px; max-width: 1240px; margin: 0 auto; }
+
+.bank-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; transition: var(--transition-smooth); }
+.bank-card:hover { transform: translateY(-6px); border-color: rgba(0, 247, 255, 0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+
+.bank-card-head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; }
+.bank-logo-placeholder { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: var(--accent-glow); }
+.bank-name { font-size: 1.2rem; font-weight: 700; color: #fff; }
+.bank-name-hint { display: block; font-size: 0.72rem; color: #65758c; font-weight: 400; text-transform: uppercase; letter-spacing: 0.4px; margin-top: 2px; }
+
+.bank-details { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; flex-grow: 1; }
+.bank-detail-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px dashed rgba(255,255,255,0.08); }
+.bank-detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+.bank-detail-label { color: var(--text-muted); font-size: 0.85rem; }
+.bank-detail-value { color: #fff; font-weight: 700; font-size: 0.95rem; }
+.bank-detail-value.placeholder { color: #4a5568; font-weight: 500; font-style: italic; }
+
+.bank-cta { width: 100%; padding: 13px 0; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; text-align: center; transition: var(--transition-smooth); }
+.bank-card:hover .bank-cta { background: var(--gradient-blue); color: #000; border-color: transparent; box-shadow: 0 8px 20px rgba(0,247,255,0.25); }
+
+.credit-note { max-width: 1240px; margin: 0 auto 80px; padding: 0 20px; color: #65758c; font-size: 0.85rem; text-align: center; }
+
+@media (max-width: 600px) {
+    .credit-hero { padding: 130px 20px 10px; }
+    .credit-hero h1 { font-size: 1.7rem; }
+    .bank-grid { padding: 35px 15px 70px; gap: 18px; }
+}
+
+/* --- СТРАНИЦА АКЦИЙ --- */
+.promo-hero { padding: 150px 20px 20px; text-align: center; }
+.promo-hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 14px; }
+.promo-hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 640px; margin: 0 auto; }
+
+.promo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 30px; padding: 50px 20px 100px; max-width: 1240px; margin: 0 auto; }
+
+.promo-card { background: var(--card-bg); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.02); transition: var(--transition-smooth); cursor: pointer; display: flex; flex-direction: column; }
+.promo-card:hover { transform: translateY(-8px); border-color: rgba(0, 247, 255, 0.2); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); }
+
+.promo-image-container { width: 100%; aspect-ratio: 4 / 3; background: #0f121a; overflow: hidden; position: relative; }
+.promo-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
+.promo-card:hover .promo-image { transform: scale(1.05); }
+
+.promo-discount-badge { position: absolute; top: 14px; left: 14px; background: var(--gradient-blue); color: #000; font-weight: 800; font-size: 13px; padding: 6px 14px; border-radius: 20px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0, 116, 217, 0.4); z-index: 2; }
+
+.promo-info { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+.promo-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+.promo-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.promo-expiry { font-size: 12px; color: #65758c; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.4px; }
+.promo-btn { background: transparent; color: var(--text-main); border: 1px solid rgba(255, 255, 255, 0.1); padding: 13px 0; width: 100%; font-weight: 700; font-size: 13px; text-transform: uppercase; text-align: center; margin-top: auto; transition: var(--transition-smooth); }
+.promo-card:hover .promo-btn { background: var(--gradient-blue); color: #000; border-color: transparent; box-shadow: 0 5px 15px rgba(0, 247, 255, 0.3); }
+
+/* Модалка с полным описанием акции */
+.promo-detail-desc { color: #b1bdcf; line-height: 1.7; white-space: pre-line; margin: 15px 0 25px; font-size: 14px; max-height: 260px; overflow-y: auto; }
+.promo-detail-expiry { color: #65758c; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 20px; display: block; }
+
+/* --- ТИЗЕР АКЦИЙ НА ГЛАВНОЙ --- */
+.promo-teaser { max-width: 1240px; margin: 0 auto 50px; padding: 0 20px; }
+.promo-teaser-inner { background: linear-gradient(120deg, rgba(0,116,217,0.12), rgba(255,255,255,0.02)); border: 1px solid rgba(0, 247, 255, 0.18); border-radius: 14px; padding: 26px 30px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.promo-teaser-text h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+.promo-teaser-text p { color: var(--text-muted); font-size: 0.9rem; }
+.promo-teaser-btn { flex-shrink: 0; padding: 13px 30px; background: var(--gradient-blue); color: #000; font-weight: 700; font-size: 13px; text-transform: uppercase; border-radius: 6px; text-decoration: none; transition: var(--transition-smooth); white-space: nowrap; }
+.promo-teaser-btn:hover { box-shadow: 0 0 25px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
+
+@media (max-width: 600px) {
+    .promo-hero { padding: 130px 20px 10px; }
+    .promo-hero h1 { font-size: 1.7rem; }
+    .promo-grid { padding: 35px 15px 70px; gap: 18px; }
+    .promo-teaser-inner { flex-direction: column; text-align: center; }
+}
+
+/* --- КАРУСЕЛЬ АКЦИЙ НА ГЛАВНОМ БАННЕРЕ --- */
+.promo-hero-carousel { position: absolute; top: 110px; bottom: 40px; right: 6%; width: 300px; z-index: 3; display: flex; }
+.promo-hero-carousel-card { display: flex; flex-direction: column; width: 100%; height: 100%; background: rgba(20, 24, 34, 0.92); backdrop-filter: blur(16px); border: 1px solid rgba(0, 247, 255, 0.25); border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55), 0 0 25px rgba(0, 116, 217, 0.15); transition: var(--transition-smooth); animation: promoHeroFadeIn 0.5s ease; }
+.promo-hero-carousel-card:hover { transform: translateY(-4px); border-color: rgba(0, 247, 255, 0.5); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 247, 255, 0.25); }
+@keyframes promoHeroFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.promo-hero-media { flex: 1 1 auto; min-height: 0; width: 100%; background: #0f121a; overflow: hidden; position: relative; }
+.promo-hero-media-el { width: 100%; height: 100%; object-fit: cover; display: block; }
+.promo-hero-media-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-weight: 800; letter-spacing: 1px; }
+.promo-hero-badge { position: absolute; top: 12px; left: 12px; background: var(--gradient-blue); color: #000; font-weight: 800; font-size: 12px; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; z-index: 2; }
+
+.promo-hero-info { flex-shrink: 0; padding: 16px 18px; }
+.promo-hero-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; line-height: 1.3; }
+.promo-hero-link { font-size: 12px; font-weight: 700; color: var(--accent-glow); text-transform: uppercase; letter-spacing: 0.4px; }
+
+.promo-hero-dots { flex-shrink: 0; display: flex; justify-content: center; gap: 7px; padding-bottom: 16px; }
+.promo-hero-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); cursor: pointer; transition: var(--transition-smooth); }
+.promo-hero-dot.active { background: var(--accent-glow); box-shadow: 0 0 8px rgba(0, 247, 255, 0.6); width: 18px; border-radius: 4px; }
+
+@media (max-width: 1100px) {
+    .promo-hero-carousel { width: 250px; right: 4%; }
+}
+@media (max-width: 900px) {
+    .promo-hero-carousel { display: none; }
+}
+/* --- КАЛЬКУЛЯТОР "ПРИМЕРНЫЕ ШАНСЫ НА ОДОБРЕНИЕ" --- */
+.approval-check { max-width: 900px; margin: 0 auto 60px; padding: 0 20px; }
+.approval-card { background: var(--card-bg); border: 1px solid rgba(0, 116, 217, 0.18); border-radius: 16px; padding: 32px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+.approval-card h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 8px; }
+.approval-disclaimer { color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+
+.approval-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 24px; }
+.approval-field label { display: block; font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; }
+.approval-field input { width: 100%; padding: 12px 14px; background: #0a0c10; border: 1px solid #333; color: #fff; border-radius: 6px; font-size: 0.95rem; }
+.approval-field input:focus { outline: none; border-color: var(--accent-blue); }
+
+.approval-submit-btn { width: 100%; padding: 15px 0; background: var(--gradient-blue); color: #000; font-weight: 700; font-size: 0.95rem; text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: var(--transition-smooth); }
+.approval-submit-btn:hover { box-shadow: 0 0 25px rgba(0, 247, 255, 0.4); transform: translateY(-2px); }
+
+.approval-result { margin-top: 24px; padding: 22px; border-radius: 12px; display: none; }
+.approval-result.visible { display: block; animation: promoHeroFadeIn 0.4s ease; }
+.approval-result-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+.approval-result-desc { color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-bottom: 14px; }
+.approval-result-stats { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 16px; font-size: 0.85rem; color: var(--text-muted); }
+.approval-result-stats strong { color: #fff; display: block; font-size: 1.05rem; margin-top: 2px; }
+
+.approval-result.good { background: rgba(37, 211, 102, 0.08); border: 1px solid rgba(37, 211, 102, 0.3); }
+.approval-result.good .approval-result-title { color: #25d366; }
+.approval-result.medium { background: rgba(255, 193, 7, 0.08); border: 1px solid rgba(255, 193, 7, 0.3); }
+.approval-result.medium .approval-result-title { color: #ffc107; }
+.approval-result.low { background: rgba(220, 53, 69, 0.08); border: 1px solid rgba(220, 53, 69, 0.3); }
+.approval-result.low .approval-result-title { color: #ff6b6b; }
+
+.approval-result-cta { display: inline-block; padding: 12px 26px; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 6px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; cursor: pointer; transition: var(--transition-smooth); }
+.approval-result-cta:hover { background: var(--gradient-blue); color: #000; border-color: transparent; }
+
+@media (max-width: 600px) {
+    .approval-card { padding: 22px; }
+    .approval-result-stats { gap: 16px; }
+}
