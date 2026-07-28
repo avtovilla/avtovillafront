@@ -1,4 +1,4 @@
-const HERO_CAROUSEL_STRAPI_URL = 'http://localhost:1337';
+const HERO_CAROUSEL_STRAPI_URL = 'https://avtovillashymkent.onrender.com';
 const HERO_CAROUSEL_INTERVAL = 5000; // 5 секунд на слайд
 
 // Универсальный разбор поля медиа Strapi: одиночный файл, массив файлов,

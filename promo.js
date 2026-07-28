@@ -1,4 +1,4 @@
-const PROMO_STRAPI_URL = 'http://localhost:1337';
+const PROMO_STRAPI_URL = 'https://avtovillashymkent.onrender.com';
 
 // Универсальный разбор поля медиа Strapi: одиночный файл, массив файлов,
 // формат v5 (плоский объект) и формат v4 ({ data: {...} } / { data: [...] }).

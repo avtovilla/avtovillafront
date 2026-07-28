@@ -321,7 +321,7 @@
             }
 
             try {
-                await fetch('http://localhost:1337/api/orders', {
+                await fetch('https://avtovillashymkent.onrender.com/api/orders', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ data: { name, phone, car: requestSubject } })

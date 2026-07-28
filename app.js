@@ -1,4 +1,4 @@
-const STRAPI_URL = 'http://localhost:1337';
+const STRAPI_URL = 'https://avtovillashymkent.onrender.com';
 
 // --- ЛОГИКА ЗАГРУЗКИ МАШИН ---
 async function fetchCars() {

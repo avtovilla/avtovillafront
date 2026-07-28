@@ -1,4 +1,4 @@
-const STRAPI_URL = 'http://localhost:1337';
+const STRAPI_URL = 'https://avtovillashymkent.onrender.com';
 
 // --- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ RICH TEXT (BLOCKS) ИЗ STRAPI V5 ---
 function renderStrapiBlocks(blocks) {
