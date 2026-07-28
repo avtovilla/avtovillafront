@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const STRAPI_URL = 'https://avtovillashymkent.onrender.com';
+=======
+const STRAPI_URL = 'http://autovilla.kz';
+>>>>>>> b0c5be22c2546e0272ace3d7f612ba5e8254addd
 
 // --- ЛОГИКА ЗАГРУЗКИ МАШИН ---
 async function fetchCars() {
