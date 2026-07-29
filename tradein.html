@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Акции | AvtoVilla</title>
-    <meta name="description" content="Действующие акции и специальные предложения AvtoVilla — выгодные условия на автомобили в наличии.">
+    <title>Trade-in | AvtoVilla</title>
+    <meta name="description" content="Оцените свой автомобиль в зачёт нового по программе Trade-in в AvtoVilla.">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <meta property="og:title" content="Акции | AvtoVilla">
-    <meta property="og:description" content="Действующие акции и специальные предложения на автомобили в наличии.">
+    <meta property="og:title" content="Trade-in | AvtoVilla">
+    <meta property="og:description" content="Оцените свой автомобиль в зачёт нового по программе Trade-in.">
     <meta property="og:image" content="logo.jpg">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="style.css">
@@ -22,9 +22,9 @@
             <a href="index.html" class="logo-link"><img src="logo.jpg" alt="AvtoVilla" class="header-logo"></a>
             <nav class="nav-menu">
                 <a href="index.html#catalog" class="nav-link">Модельный ряд</a>
-                <a href="promo.html" class="nav-link active">Акции</a>
+                <a href="promo.html" class="nav-link">Акции</a>
                 <a href="credit.html" class="nav-link">Кредитование</a>
-                <a href="tradein.html" class="nav-link">Trade-in</a>
+                <a href="tradein.html" class="nav-link active">Trade-in</a>
                 <a href="socials.html" class="nav-link">Наши соцсети</a>
             </nav>
             <div class="header-contacts">
@@ -62,31 +62,72 @@
         </div>
     </header>
 
-    <section class="promo-hero">
-        <h1>Действующие акции</h1>
-        <p>Специальные условия, рассрочка и выгодные предложения на автомобили в наличии.</p>
+    <section class="credit-hero">
+        <h1>Trade-in — обменяйте авто выгодно</h1>
+        <p>Оставьте заявку — наш менеджер оценит ваш автомобиль и предложит его в зачёт стоимости нового.</p>
     </section>
 
-    <div id="promo-grid" class="promo-grid">
-        <div class="loading-spinner"><div class="spinner"></div><p>Загрузка акций...</p></div>
+    <div class="approval-check">
+        <div class="approval-card">
+            <h2>Как это работает</h2>
+            <p class="approval-disclaimer" style="border-bottom:none; margin-bottom: 0;">
+                1️⃣ Заполняете форму ниже → 2️⃣ Менеджер связывается и уточняет детали → 3️⃣ Пригоняете авто на осмотр →
+                4️⃣ Получаете точную оценку и разницу в стоимости на новую машину.
+                Это <strong>предварительная заявка</strong>, точная сумма определяется только после очного осмотра автомобиля.
+            </p>
+        </div>
+    </div>
+
+    <div class="approval-check">
+        <div class="approval-card">
+            <h2>Заявка на оценку автомобиля</h2>
+            <p class="approval-disclaimer">Заполните данные о своём авто — менеджер свяжется для уточнения деталей и записи на осмотр.</p>
+
+            <form id="tradein-form">
+                <div class="approval-form-grid">
+                    <div class="approval-field">
+                        <label for="tradein-brand">Марка</label>
+                        <input type="text" id="tradein-brand" placeholder="Toyota" required>
+                    </div>
+                    <div class="approval-field">
+                        <label for="tradein-model">Модель</label>
+                        <input type="text" id="tradein-model" placeholder="Camry" required>
+                    </div>
+                    <div class="approval-field">
+                        <label for="tradein-year">Год выпуска</label>
+                        <input type="number" id="tradein-year" placeholder="2020" min="1990" max="2026" required>
+                    </div>
+                    <div class="approval-field">
+                        <label for="tradein-mileage">Пробег, км</label>
+                        <input type="number" id="tradein-mileage" placeholder="85 000" min="0" required>
+                    </div>
+                    <div class="approval-field">
+                        <label for="tradein-condition">Состояние</label>
+                        <select id="tradein-condition" style="width:100%; padding:12px 14px; background:#0a0c10; border:1px solid #333; color:#fff; border-radius:6px; font-size:0.95rem;">
+                            <option value="Отличное">Отличное</option>
+                            <option value="Хорошее">Хорошее</option>
+                            <option value="Требует ремонта">Требует ремонта</option>
+                        </select>
+                    </div>
+                    <div class="approval-field">
+                        <label for="tradein-name">Ваше имя</label>
+                        <input type="text" id="tradein-name" placeholder="Имя" required>
+                    </div>
+                    <div class="approval-field">
+                        <label for="tradein-phone">Телефон</label>
+                        <input type="tel" id="tradein-phone" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="approval-submit-btn" id="tradein-submit-btn">Отправить заявку</button>
+            </form>
+        </div>
     </div>
 
     <footer class="main-footer">
         <div class="container"><p>&copy; 2026 AvtoVilla. Все права защищены.</p></div>
     </footer>
 
-    <!-- Модалка полного описания акции (для акций без привязанного авто) -->
-    <div id="promo-detail-modal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2 id="promo-detail-title">Акция</h2>
-            <span id="promo-detail-expiry" class="promo-detail-expiry"></span>
-            <p id="promo-detail-desc" class="promo-detail-desc"></p>
-            <button type="button" id="promo-detail-request-btn" class="btn-primary" style="width:100%;">Оставить заявку по акции</button>
-        </div>
-    </div>
-
-    <!-- Модалка заявки -->
     <div id="modal" class="modal-overlay">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -117,9 +158,6 @@
 
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modal-title');
-
-        // Важно: на странице два модальных окна (заявка + детали акции), у обоих есть .close-modal —
-        // поэтому закрытие скоуплено по конкретному контейнеру, а не document.querySelector('.close-modal')
         document.querySelector('#modal .close-modal').onclick = () => modal.style.display = 'none';
         window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
@@ -133,22 +171,12 @@
             const form = e.target;
             const name = form.querySelector('input[type="text"]').value;
             const phone = form.querySelector('input[type="tel"]').value;
-            const requestSubject = modalTitle.innerText;
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const submitBtnOriginalText = submitBtn ? submitBtn.innerText : '';
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = '0.6';
-                submitBtn.style.cursor = 'not-allowed';
-                submitBtn.innerText = 'Отправка...';
-            }
 
             try {
                 await fetch('https://avtovillashymkent.onrender.com/api/orders', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data: { name, phone, car: requestSubject } })
+                    body: JSON.stringify({ data: { name, phone, car: modalTitle.innerText } })
                 });
                 modal.style.display = 'none';
                 const n = document.getElementById('success-notification');
@@ -157,17 +185,48 @@
                 form.reset();
             } catch (err) {
                 alert('Ошибка отправки заявки.');
+            }
+        });
+
+        // --- Форма Trade-in ---
+        document.getElementById('tradein-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const brand = document.getElementById('tradein-brand').value;
+            const model = document.getElementById('tradein-model').value;
+            const year = document.getElementById('tradein-year').value;
+            const mileage = document.getElementById('tradein-mileage').value;
+            const condition = document.getElementById('tradein-condition').value;
+            const name = document.getElementById('tradein-name').value;
+            const phone = document.getElementById('tradein-phone').value;
+
+            const submitBtn = document.getElementById('tradein-submit-btn');
+            const originalText = submitBtn.innerText;
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.6';
+            submitBtn.innerText = 'Отправка...';
+
+            const carSummary = `Trade-in заявка: ${brand} ${model}, ${year} г., пробег ${mileage} км, состояние: ${condition}`;
+
+            try {
+                await fetch('https://avtovillashymkent.onrender.com/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: { name, phone, car: carSummary } })
+                });
+                const n = document.getElementById('success-notification');
+                n.style.display = 'flex';
+                setTimeout(() => { n.style.opacity = '1'; }, 10);
+                document.getElementById('tradein-form').reset();
+            } catch (err) {
+                alert('Ошибка отправки заявки.');
             } finally {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.style.opacity = '';
-                    submitBtn.style.cursor = '';
-                    submitBtn.innerText = submitBtnOriginalText;
-                }
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '';
+                submitBtn.innerText = originalText;
             }
         });
     </script>
-    <script src="promo.js?v=2"></script>
     <script src="contacts-widget.js"></script>
     <script src="phone-mask.js"></script>
 </body>
