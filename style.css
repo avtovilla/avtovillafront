@@ -1,4 +1,5 @@
 /* --- ГЛОБАЛЬНЫЕ НАСТРОЙКИ --- */
+html { scroll-behavior: smooth; }
 :root { --bg-dark: #0a0c10; --card-bg: #141822; --text-main: #ffffff; --text-muted: #8e94a0; --accent-blue: #0074d9; --accent-glow: #00f7ff; --gradient-blue: linear-gradient(135deg, #00f7ff 0%, #0074d9 100%); --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 body { background-color: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
@@ -286,7 +287,7 @@ button { cursor: pointer; border: none; outline: none; }
 .detail-price-value.accent { font-size: 1.45rem; color: var(--accent-glow); text-shadow: 0 0 20px rgba(0,247,255,0.25); }
 
 /* Сетка характеристик */
-.spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 34px; }
+.spec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
 .spec-card { display: flex; align-items: center; gap: 14px; background: linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)); padding: 16px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition-smooth); }
 .spec-card:hover { border-color: rgba(0, 247, 255, 0.3); transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,0.35), 0 0 16px rgba(0,116,217,0.1); }
 .spec-card-icon { flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(0, 116, 217, 0.1); color: var(--accent-glow); transition: var(--transition-smooth); }
@@ -315,14 +316,31 @@ button { cursor: pointer; border: none; outline: none; }
 #btn-order-car-fixed { width: 100%; padding: 20px; background: var(--gradient-blue); font-size: 1.1rem; color: #000; font-weight: 700; text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: var(--transition-smooth); box-shadow: 0 8px 22px rgba(0, 116, 217, 0.35); }
 #btn-order-car-fixed:hover { box-shadow: 0 0 28px rgba(0, 247, 255, 0.5); transform: translateY(-2px); }
 
-.description-block { margin-top: 44px; }
+/* Быстрая навигация по разделам */
+.detail-quick-nav { display: flex; gap: 8px; margin-bottom: 30px; padding-bottom: 4px; overflow-x: auto; scrollbar-width: none; }
+.detail-quick-nav::-webkit-scrollbar { display: none; }
+.detail-quick-nav a { flex-shrink: 0; padding: 9px 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); text-decoration: none; font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; transition: var(--transition-smooth); scroll-margin-top: 105px; }
+.detail-quick-nav a:hover { color: #fff; border-color: rgba(0, 247, 255, 0.4); background: rgba(0, 247, 255, 0.06); }
+
+.detail-section { scroll-margin-top: 105px; margin-bottom: 40px; }
+.detail-section:last-child { margin-bottom: 0; }
+
+/* Карточка описания */
+.description-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 26px 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.35); }
 .description { color: #b1bdcf; line-height: 1.7; }
 
+/* Мобильная липкая панель "Забронировать" */
+.mobile-sticky-cta { display: none; }
+
 @media (max-width: 900px) {
-    .car-full-view { grid-template-columns: 1fr; padding: 15px 15px 50px; gap: 30px; }
+    .car-full-view { grid-template-columns: 1fr; padding: 15px 15px 90px; gap: 30px; }
     .gallery-track-wrapper { height: 320px; }
     .car-detail-title { font-size: 1.6rem; }
-    .calculator-card, .detail-price-card { padding: 20px; }
+    .calculator-card, .detail-price-card, .description-card { padding: 20px; }
+
+    .mobile-sticky-cta { display: flex; align-items: center; gap: 14px; position: fixed; bottom: 0; left: 0; right: 0; z-index: 500; background: rgba(20, 24, 34, 0.97); backdrop-filter: blur(14px); border-top: 1px solid rgba(0, 247, 255, 0.15); padding: 12px 16px; box-shadow: 0 -10px 30px rgba(0,0,0,0.4); }
+    .mobile-sticky-cta-price { flex-shrink: 0; color: var(--accent-glow); font-weight: 800; font-size: 0.95rem; line-height: 1.2; white-space: nowrap; }
+    .mobile-sticky-cta-btn { flex: 1; padding: 14px 0; background: var(--gradient-blue); color: #000; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; border-radius: 8px; cursor: pointer; }
 }
 
 /* --- СТРАНИЦА КРЕДИТОВАНИЯ --- */

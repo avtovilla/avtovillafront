@@ -212,44 +212,71 @@ function renderCar(car) {
                     ${bulletsMarkup}
                 </div>
 
-                <h2 class="detail-heading">Характеристики</h2>
-                <div class="spec-grid">
-                    ${specCardsMarkup}
-                </div>
+                <nav class="detail-quick-nav">
+                    <a href="#detail-specs">Характеристики</a>
+                    <a href="#detail-calculator">Кредит</a>
+                    <a href="#detail-overview">Обзор</a>
+                </nav>
 
-                <h2 class="detail-heading">Кредитный калькулятор</h2>
-                <div class="calculator-card">
-                    <div class="calc-row">
-                        <div class="calc-label-wrapper">
-                            <span class="calc-label">Первоначальный взнос</span>
-                            <span class="calc-value" id="calc-downpayment-text">20%</span>
+                <section id="detail-specs" class="detail-section">
+                    <h2 class="detail-heading">Характеристики</h2>
+                    <div class="spec-grid">
+                        ${specCardsMarkup}
+                    </div>
+                </section>
+
+                <section id="detail-calculator" class="detail-section">
+                    <h2 class="detail-heading">Кредитный калькулятор</h2>
+                    <div class="calculator-card">
+                        <div class="calc-row">
+                            <div class="calc-label-wrapper">
+                                <span class="calc-label">Первоначальный взнос</span>
+                                <span class="calc-value" id="calc-downpayment-text">20%</span>
+                            </div>
+                            <input type="range" id="slider-downpayment" class="calc-slider" min="10" max="70" step="5" value="20">
                         </div>
-                        <input type="range" id="slider-downpayment" class="calc-slider" min="10" max="70" step="5" value="20">
-                    </div>
-                    <div class="calc-row">
-                        <div class="calc-label-wrapper">
-                            <span class="calc-label">Срок</span>
-                            <span class="calc-value" id="calc-term-text">60 мес.</span>
+                        <div class="calc-row">
+                            <div class="calc-label-wrapper">
+                                <span class="calc-label">Срок</span>
+                                <span class="calc-value" id="calc-term-text">60 мес.</span>
+                            </div>
+                            <input type="range" id="slider-term" class="calc-slider" min="12" max="84" step="12" value="60">
                         </div>
-                        <input type="range" id="slider-term" class="calc-slider" min="12" max="84" step="12" value="60">
+                        <div class="calc-result">
+                            <span class="calc-label">Платёж</span>
+                            <strong class="calc-result-value" id="calc-monthly-payment-result">0 ₸</strong>
+                        </div>
                     </div>
-                    <div class="calc-result">
-                        <span class="calc-label">Платёж</span>
-                        <strong class="calc-result-value" id="calc-monthly-payment-result">0 ₸</strong>
+
+                    <div class="car-btn-submit-container">
+                        <button id="btn-order-car-fixed">Забронировать</button>
                     </div>
-                </div>
+                </section>
 
-                <div class="car-btn-submit-container">
-                    <button id="btn-order-car-fixed">Забронировать</button>
-                </div>
-
-                <div class="description-block">
+                <section id="detail-overview" class="detail-section">
                     <h2 class="detail-heading">Обзор</h2>
-                    <div class="description">${descriptionHtml}</div>
-                </div>
+                    <div class="description-card">
+                        <div class="description">${descriptionHtml}</div>
+                    </div>
+                </section>
             </div>
         </div>
+
+        <div class="mobile-sticky-cta">
+            <div class="mobile-sticky-cta-price">
+                <span>от ${formattedMonthly} ₸/мес</span>
+            </div>
+            <button id="btn-order-car-mobile" class="mobile-sticky-cta-btn">Забронировать</button>
+        </div>
     `;
+
+    // Кнопка в липкой мобильной панели дублирует основную кнопку бронирования
+    const mobileOrderBtn = document.getElementById('btn-order-car-mobile');
+    if (mobileOrderBtn) {
+        mobileOrderBtn.addEventListener('click', () => {
+            document.getElementById('btn-order-car-fixed')?.click();
+        });
+    }
 
     if (isMultiImage) runSliderEngine();
     initCreditCalculator(basePrice);
