@@ -1,5 +1,18 @@
 const STRAPI_URL = 'https://avtovillashymkent.onrender.com';
 
+// Универсальный разбор поля медиа Strapi: одиночный файл, массив файлов,
+// формат v5 (плоский объект) и формат v4 ({ data: {...} } / { data: [...] }).
+function resolveCarMedia(rawField) {
+    if (!rawField) return null;
+    let candidate = rawField;
+    if (candidate.data !== undefined) candidate = candidate.data;
+    if (Array.isArray(candidate)) candidate = candidate[0];
+    if (!candidate) return null;
+    const data = candidate.attributes ? { ...candidate.attributes, id: candidate.id } : candidate;
+    if (!data || !data.url) return null;
+    return { url: data.url, mime: data.mime || '', width: data.width || null, height: data.height || null };
+}
+
 // --- ЛОГИКА ЗАГРУЗКИ МАШИН ---
 async function fetchCars() {
     const grid = document.getElementById('cars-grid');
@@ -42,27 +55,19 @@ function renderCars(cars) {
         const carId = car.documentId || car.id || dataFields.documentId || dataFields.id;
 
         let imageUrl = 'placeholder-car.jpg';
-        let mediaWidth = null;
-        let mediaHeight = null;
         let mediaMime = '';
 
-        const imgObj = dataFields.image;
-        let mediaData = null;
-        if (imgObj && imgObj.url) {
-            mediaData = imgObj;
-        } else if (imgObj && imgObj.data && imgObj.data.attributes) {
-            mediaData = imgObj.data.attributes;
+        // Сначала пробуем одиночное поле image, если пусто — берём первое фото из gallery
+        let resolvedMedia = resolveCarMedia(dataFields.image);
+        if (!resolvedMedia) {
+            resolvedMedia = resolveCarMedia(dataFields.gallery);
         }
 
-        if (mediaData) {
-            imageUrl = `${STRAPI_URL}${mediaData.url}`;
-            mediaWidth = mediaData.width || null;
-            mediaHeight = mediaData.height || null;
-            mediaMime = mediaData.mime || '';
+        if (resolvedMedia) {
+            imageUrl = `${STRAPI_URL}${resolvedMedia.url}`;
+            mediaMime = resolvedMedia.mime;
         }
 
-        // Соотношение сторон конкретного файла. Если Strapi не отдал width/height — используем безопасный дефолт 4/3.
-        const aspectRatio = (mediaWidth && mediaHeight) ? `${mediaWidth} / ${mediaHeight}` : '4 / 3';
         const isVideo = mediaMime.startsWith('video/');
 
         const mediaMarkup = isVideo
@@ -75,7 +80,7 @@ function renderCars(cars) {
 
         const cardHtml = `
             <a href="car.html?id=${carId}" class="car-card" onclick="localStorage.setItem('selectedCarId', '${carId}');">
-                <div class="car-image-container" style="aspect-ratio: ${aspectRatio};">
+                <div class="car-image-container">
                     ${mediaMarkup}
                 </div>
                 <div class="car-info">
