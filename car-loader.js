@@ -148,6 +148,18 @@ function renderCar(car) {
     const rawDescription = data.description || data.Description || data.desc || data.Desc;
     const descriptionHtml = renderStrapiBlocks(rawDescription);
 
+    // Разбор поля highlights: одна фишка на строку в формате "Заголовок | Описание"
+    const rawHighlights = data.highlights || '';
+    const highlightsList = rawHighlights
+        .split('\n')
+        .map(line => line.trim())
+        .filter(Boolean)
+        .map(line => {
+            const [hTitle, hDesc] = line.split('|').map(s => (s || '').trim());
+            return { title: hTitle || '', desc: hDesc || '' };
+        })
+        .filter(h => h.title);
+
     // Универсальный разбор одного элемента медиа (фото или видео) из ответа Strapi —
     // поддерживает и плоский формат (v5), и вложенный { attributes: {...} } (v4).
     function resolveGalleryItem(rawItem) {
@@ -204,7 +216,55 @@ function renderCar(car) {
         <button class="gallery-nav-arrow btn-next" type="button">›</button>
     ` : '';
 
+    // Карусель "фишек" — переиспользует фото из галереи по кругу
+    let highlightsMarkup = '';
+    if (highlightsList.length > 0) {
+        const cardsHtml = highlightsList.map((h, idx) => {
+            const img = collectedImages[idx % collectedImages.length];
+            const isVideoHighlight = (img.mime || '').startsWith('video/');
+            const mediaEl = isVideoHighlight
+                ? `<video src="${img.url}" muted loop autoplay playsinline></video>`
+                : `<img src="${img.url}" alt="${h.title}">`;
+            return `
+                <div class="highlight-card">
+                    <div class="highlight-card-media">${mediaEl}</div>
+                    <div class="highlight-card-body">
+                        <h3>${h.title}</h3>
+                        ${h.desc ? `<p>${h.desc}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        highlightsMarkup = `
+            <section class="highlights-section">
+                <div class="highlights-section-inner">
+                    <h2 class="detail-heading">Особенности модели</h2>
+                    <div class="highlights-carousel">${cardsHtml}</div>
+                </div>
+            </section>
+        `;
+    }
+
     container.innerHTML = `
+        <div class="car-hero-top">
+            <h1 class="car-detail-title">${title}</h1>
+            <div class="car-hero-price-row">
+                <div class="car-hero-price-block">
+                    <span class="detail-price-label">Цена в наличии</span>
+                    <strong class="car-hero-price">от ${formattedBase} ₸</strong>
+                </div>
+                <div class="car-hero-price-block">
+                    <span class="detail-price-label">В кредит ежемесячно</span>
+                    <strong class="car-hero-price accent">от ${formattedMonthly} ₸ / мес</strong>
+                </div>
+            </div>
+            <div class="car-hero-cta-row">
+                <button id="btn-order-car-fixed">Забронировать</button>
+                <button id="btn-test-drive-car" class="secondary">Записаться на тест-драйв</button>
+            </div>
+        </div>
+
         <div class="car-full-view">
             <div class="premium-gallery-container">
                 <div class="gallery-track-wrapper">${slidesMarkup}</div>
@@ -212,19 +272,6 @@ function renderCar(car) {
             </div>
 
             <div class="car-info-right-block">
-                <h1 class="car-detail-title">${title}</h1>
-
-                <div class="detail-price-card">
-                    <div class="detail-price-block">
-                        <span class="detail-price-label">Цена в наличии</span>
-                        <strong class="detail-price-value">от ${formattedBase} ₸</strong>
-                    </div>
-                    <div class="detail-price-block">
-                        <span class="detail-price-label">В кредит ежемесячно</span>
-                        <strong class="detail-price-value accent">от ${formattedMonthly} ₸ / мес</strong>
-                    </div>
-                </div>
-
                 <div class="gallery-bullets" style="display: ${isMultiImage ? 'flex' : 'none'};">
                     ${bulletsMarkup}
                 </div>
@@ -264,10 +311,6 @@ function renderCar(car) {
                             <strong class="calc-result-value" id="calc-monthly-payment-result">0 ₸</strong>
                         </div>
                     </div>
-
-                    <div class="car-btn-submit-container">
-                        <button id="btn-order-car-fixed">Забронировать</button>
-                    </div>
                 </section>
 
                 <section id="detail-overview" class="detail-section">
@@ -278,6 +321,8 @@ function renderCar(car) {
                 </section>
             </div>
         </div>
+
+        ${highlightsMarkup}
 
         <div class="mobile-sticky-cta">
             <div class="mobile-sticky-cta-price">
@@ -397,6 +442,8 @@ function initModalLogic(carTitle) {
     }
 
     if (orderBtn) orderBtn.addEventListener('click', () => showModalWindow(`Заявка на ${carTitle}`));
+    const testDriveBtn = document.getElementById('btn-test-drive-car');
+    if (testDriveBtn) testDriveBtn.addEventListener('click', () => showModalWindow(`Тест-драйв: ${carTitle}`));
     callbackBtns.forEach(btn => btn.addEventListener('click', () => showModalWindow('Оставьте заявку')));
     if (closeBtn) closeBtn.addEventListener('click', () => modal.style.display = 'none');
     window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
