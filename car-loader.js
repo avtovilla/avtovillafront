@@ -148,32 +148,49 @@ function renderCar(car) {
     const rawDescription = data.description || data.Description || data.desc || data.Desc;
     const descriptionHtml = renderStrapiBlocks(rawDescription);
 
-    let collectedImages = [];
-    const gallerySource = data.gallery;
-    if (gallerySource && Array.isArray(gallerySource)) {
-        collectedImages = gallerySource;
-    } else if (gallerySource && gallerySource.data && Array.isArray(gallerySource.data)) {
-        collectedImages = gallerySource.data.map(item => item.attributes || item);
+    // Универсальный разбор одного элемента медиа (фото или видео) из ответа Strapi —
+    // поддерживает и плоский формат (v5), и вложенный { attributes: {...} } (v4).
+    function resolveGalleryItem(rawItem) {
+        if (!rawItem) return null;
+        const item = rawItem.attributes ? { ...rawItem.attributes, id: rawItem.id } : rawItem;
+        if (!item || !item.url) return null;
+        return { url: item.url, mime: item.mime || '' };
     }
 
-    if (collectedImages.length === 0) {
-        let singleImgUrl = 'placeholder-car.jpg';
-        if (data.image && data.image.url) {
-            singleImgUrl = `${STRAPI_URL}${data.image.url}`;
-        } else if (data.image && data.image.data && data.image.data.attributes && data.image.data.attributes.url) {
-            singleImgUrl = `${STRAPI_URL}${data.image.data.attributes.url}`;
+    let collectedImages = [];
+    const gallerySource = data.gallery;
+    let rawGalleryItems = [];
+    if (Array.isArray(gallerySource)) {
+        rawGalleryItems = gallerySource;
+    } else if (gallerySource && Array.isArray(gallerySource.data)) {
+        rawGalleryItems = gallerySource.data;
+    }
+
+    rawGalleryItems.forEach(rawItem => {
+        const resolved = resolveGalleryItem(rawItem);
+        if (resolved) {
+            collectedImages.push({ url: `${STRAPI_URL}${resolved.url}`, mime: resolved.mime, isDirectUrl: true });
         }
-        collectedImages.push({ url: singleImgUrl, isDirectUrl: true });
+    });
+
+    if (collectedImages.length === 0) {
+        const resolvedSingle = resolveGalleryItem(data.image);
+        const singleImgUrl = resolvedSingle ? `${STRAPI_URL}${resolvedSingle.url}` : 'placeholder-car.jpg';
+        const singleMime = resolvedSingle ? resolvedSingle.mime : '';
+        collectedImages.push({ url: singleImgUrl, mime: singleMime, isDirectUrl: true });
     }
 
     let slidesMarkup = '';
     let bulletsMarkup = '';
 
     collectedImages.forEach((img, idx) => {
-        const urlPath = img.isDirectUrl ? img.url : `${STRAPI_URL}${img.url}`;
+        const isVideo = (img.mime || '').startsWith('video/');
+        const mediaTag = isVideo
+            ? `<video src="${img.url}" style="width:100%; height:100%; object-fit: contain;" controls muted playsinline></video>`
+            : `<img src="${img.url}" alt="${title} - фото ${idx + 1}" style="width:100%; height:100%; object-fit: contain;">`;
         slidesMarkup += `
             <div class="gallery-slide ${idx === 0 ? 'active' : ''}">
-                <img src="${urlPath}" alt="${title} - фото ${idx + 1}" style="width:100%; height:100%; object-fit: contain;">
+                ${mediaTag}
             </div>
         `;
         bulletsMarkup += `
