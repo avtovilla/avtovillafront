@@ -88,8 +88,55 @@ function renderCar(car) {
     const data = car.attributes ? car.attributes : car;
 
     const title = data.Title || data.title || 'Модель автомобиля';
-    const year = data.year || '—';
-    const engine = data.engine || '—';
+    const year = data.year || '';
+    const engine = data.engine || '';
+    const transmission = data.transmission || '';
+    const driveType = data.drive_type || '';
+    const fuelType = data.fuel_type || '';
+    const power = data.power || '';
+    const mileage = (data.mileage !== undefined && data.mileage !== null && data.mileage !== '') ? data.mileage : '';
+    const color = data.color || '';
+    const bodyType = data.body_type || '';
+
+    const numberFormatter = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+
+    // Иконки для карточек характеристик (единый набор simple-line SVG в стиле сайта)
+    const specIcons = {
+        year: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
+        engine: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 8V4h4l3 3v5h-2M14 8H8L4 12v5h2M14 8v9M4 17h16M8 12v5"/></svg>',
+        transmission: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>',
+        drive: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M7 15V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8"/></svg>',
+        fuel: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 22V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 22h10M14 10h2a2 2 0 0 1 2 2v3.5a1.5 1.5 0 0 0 3 0V8l-3-3"/><path d="M3 10h10"/></svg>',
+        power: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>',
+        mileage: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 12l4-4M8 12a4 4 0 0 1 4-4"/></svg>',
+        color: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21a9 9 0 1 1 0-18c4 0 8 2.5 8 7 0 2-1.5 3-3 3h-2a2 2 0 0 0-1.5 3.3c.4.5.2 1.2-.4 1.5-.4.2-.7.2-1.1.2z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="10.5" cy="7" r="1"/></svg>',
+        body: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17h1a2 2 0 0 0 4 0h8a2 2 0 0 0 4 0h1v-5l-2-4a2 2 0 0 0-2-1H8a2 2 0 0 0-1.8 1.1L4 12l-1 1v4z"/><path d="M7 12h10"/></svg>',
+    };
+
+    function buildSpecCard(icon, label, value) {
+        if (value === '' || value === null || value === undefined) return '';
+        return `
+            <div class="spec-card">
+                <div class="spec-card-icon">${specIcons[icon]}</div>
+                <div>
+                    <span class="spec-label">${label}</span>
+                    <strong class="spec-value">${value}</strong>
+                </div>
+            </div>
+        `;
+    }
+
+    const specCardsMarkup = [
+        buildSpecCard('year', 'Год выпуска', year),
+        buildSpecCard('body', 'Тип кузова', bodyType),
+        buildSpecCard('engine', 'Двигатель', engine),
+        buildSpecCard('power', 'Мощность', power ? `${power} л.с.` : ''),
+        buildSpecCard('transmission', 'Коробка передач', transmission),
+        buildSpecCard('drive', 'Привод', driveType),
+        buildSpecCard('fuel', 'Тип топлива', fuelType),
+        buildSpecCard('mileage', 'Пробег', mileage !== '' ? `${numberFormatter.format(mileage)} км` : ''),
+        buildSpecCard('color', 'Цвет кузова', color),
+    ].join('');
 
     const basePrice = data.base_price || 0;
     const monthlyPrice = data.monthly_price || 0;
@@ -167,14 +214,7 @@ function renderCar(car) {
 
                 <h2 class="detail-heading">Характеристики</h2>
                 <div class="spec-grid">
-                    <div class="spec-card">
-                        <span class="spec-label">Год выпуска</span>
-                        <strong class="spec-value">${year}</strong>
-                    </div>
-                    <div class="spec-card">
-                        <span class="spec-label">Двигатель</span>
-                        <strong class="spec-value">${engine}</strong>
-                    </div>
+                    ${specCardsMarkup}
                 </div>
 
                 <h2 class="detail-heading">Кредитный калькулятор</h2>
