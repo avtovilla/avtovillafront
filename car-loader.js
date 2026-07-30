@@ -294,6 +294,18 @@ function renderCar(car) {
                     <div class="calculator-card">
                         <div class="calc-row">
                             <div class="calc-label-wrapper">
+                                <span class="calc-label">Банк</span>
+                            </div>
+                            <select id="calc-bank-select" class="calc-bank-select">
+                                <option value="kaspi">Каспи Банк — 22,5%</option>
+                                <option value="halyk">Halyk Bank — 21%</option>
+                                <option value="bereke">Bereke Bank — 23,4%</option>
+                                <option value="forte">Forte Bank — 22%</option>
+                                <option value="eurasian">Евразийский Банк — 23%</option>
+                            </select>
+                        </div>
+                        <div class="calc-row">
+                            <div class="calc-label-wrapper">
                                 <span class="calc-label">Первоначальный взнос</span>
                                 <span class="calc-value" id="calc-downpayment-text">20%</span>
                             </div>
@@ -306,10 +318,27 @@ function renderCar(car) {
                             </div>
                             <input type="range" id="slider-term" class="calc-slider" min="12" max="84" step="12" value="60">
                         </div>
+
+                        <div class="calc-summary">
+                            <div class="calc-summary-row">
+                                <span>Стоимость автомобиля</span>
+                                <strong id="calc-summary-price">0 ₸</strong>
+                            </div>
+                            <div class="calc-summary-row">
+                                <span>Сумма кредита</span>
+                                <strong id="calc-summary-loan">0 ₸</strong>
+                            </div>
+                            <div class="calc-summary-row">
+                                <span>Номинальная ставка</span>
+                                <strong id="calc-summary-rate">0%</strong>
+                            </div>
+                        </div>
+
                         <div class="calc-result">
-                            <span class="calc-label">Платёж</span>
+                            <span class="calc-label">Ежемесячный платёж</span>
                             <strong class="calc-result-value" id="calc-monthly-payment-result">0 ₸</strong>
                         </div>
+                        <p class="calc-disclaimer">Расчёт ориентировочный, по стандартным (не партнёрским) ставкам банков. Точные условия — у менеджера AvtoVilla.</p>
                     </div>
                 </section>
 
@@ -366,12 +395,24 @@ function setupActionBarLinks(carTitle) {
     }
 }
 
+const BANK_RATES = {
+    kaspi: 22.5,
+    halyk: 21,
+    bereke: 23.4,
+    forte: 22,
+    eurasian: 23,
+};
+
 function initCreditCalculator(carPrice) {
     const sliderDownpayment = document.getElementById('slider-downpayment');
     const sliderTerm = document.getElementById('slider-term');
+    const bankSelect = document.getElementById('calc-bank-select');
     const textDownpayment = document.getElementById('calc-downpayment-text');
     const textTerm = document.getElementById('calc-term-text');
     const resultMonthlyPayment = document.getElementById('calc-monthly-payment-result');
+    const summaryPrice = document.getElementById('calc-summary-price');
+    const summaryLoan = document.getElementById('calc-summary-loan');
+    const summaryRate = document.getElementById('calc-summary-rate');
 
     if (!sliderDownpayment || !sliderTerm || !carPrice) return;
 
@@ -388,21 +429,28 @@ function initCreditCalculator(carPrice) {
     function calculateCredit() {
         const percent = parseInt(sliderDownpayment.value);
         const termMonths = parseInt(sliderTerm.value);
+        const bankKey = bankSelect ? bankSelect.value : 'kaspi';
+        const annualRate = BANK_RATES[bankKey] || 22;
+
         const downPaymentAmount = carPrice * (percent / 100);
         textDownpayment.innerText = `${currencyFormatter.format(downPaymentAmount)} ₸ (${percent}%)`;
         textTerm.innerText = `${termMonths} мес.`;
         fillSliderTrack(sliderDownpayment);
         fillSliderTrack(sliderTerm);
 
-        const annualRate = 14;
         const monthlyRate = (annualRate / 12) / 100;
         const loanBody = carPrice - downPaymentAmount;
         let monthlyPayment = loanBody > 0 ? loanBody * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1) : 0;
+
         resultMonthlyPayment.innerText = `${currencyFormatter.format(monthlyPayment)} ₸ / мес`;
+        if (summaryPrice) summaryPrice.innerText = `${currencyFormatter.format(carPrice)} ₸`;
+        if (summaryLoan) summaryLoan.innerText = `${currencyFormatter.format(loanBody)} ₸`;
+        if (summaryRate) summaryRate.innerText = `${annualRate}%`;
     }
 
     sliderDownpayment.addEventListener('input', calculateCredit);
     sliderTerm.addEventListener('input', calculateCredit);
+    if (bankSelect) bankSelect.addEventListener('change', calculateCredit);
     calculateCredit();
 }
 
