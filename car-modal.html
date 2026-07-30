@@ -1,0 +1,28 @@
+<!-- ================================================================
+     ЗАМЕНИТЬ существующие блоки "Характеристики" и "Кредитный калькулятор"
+     на этот фрагмент внутри car.html
+     ================================================================ -->
+
+<div class="car-info-panel">
+  <button id="openSpecsBtn" class="info-btn">📋 Характеристики</button>
+  <button id="openCalcBtn" class="info-btn">💰 Кредитный калькулятор</button>
+</div>
+
+<!-- Модаль: Характеристики -->
+<div id="specsModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('specsModal')">✕</button>
+    <div id="specsContent"><!-- заполняется в car-modal.js --></div>
+  </div>
+</div>
+
+<!-- Модаль: Кредитный калькулятор -->
+<div id="calcModal" class="modal">
+  <div class="modal-content modal-lg">
+    <button class="modal-close" onclick="closeModal('calcModal')">✕</button>
+    <div id="calcContent"><!-- заполняется в car-modal.js --></div>
+  </div>
+</div>
+
+<!-- Подключить перед закрывающим </body>, после car-loader.js -->
+<script src="car-modal.js"></script>

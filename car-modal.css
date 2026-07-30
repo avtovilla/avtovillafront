@@ -1,0 +1,173 @@
+/* ================================================================
+   ДОБАВИТЬ в конец style.css
+   Стили для модальных окон "Характеристики" и "Кредитный калькулятор"
+   ================================================================ */
+
+.car-info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-btn {
+  width: 100%;
+  padding: 12px;
+  background: #00d4ff;
+  border: none;
+  border-radius: 6px;
+  color: #1a1a2e;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.info-btn:hover {
+  background: #00a8cc;
+  transform: translateY(-2px);
+}
+
+/* Модальное окно */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #1a1a2e;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  color: #fff;
+}
+
+.modal-lg {
+  max-width: 700px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #fff;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #00d4ff;
+}
+
+/* Сетка характеристик */
+.specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #0f0f1e;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.spec-item span {
+  font-size: 12px;
+  color: #999;
+}
+
+.spec-item strong {
+  color: #00d4ff;
+  font-size: 15px;
+}
+
+/* Форма калькулятора */
+.calculator-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #00d4ff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.form-group input[type="number"] {
+  padding: 10px;
+  background: #0f0f1e;
+  border: 1px solid #00d4ff;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 15px;
+}
+
+.form-group input[type="range"] {
+  cursor: pointer;
+}
+
+.calc-button {
+  padding: 12px;
+  background: #00d4ff;
+  border: none;
+  border-radius: 6px;
+  color: #1a1a2e;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.calc-button:hover {
+  background: #00a8cc;
+}
+
+.calc-results {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  background: #0f0f1e;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.result-item strong {
+  color: #00d4ff;
+}
