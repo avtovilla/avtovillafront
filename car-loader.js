@@ -277,9 +277,9 @@ function renderCar(car) {
                 </div>
 
                 <nav class="detail-quick-nav">
-                    <a href="#detail-specs">Характеристики</a>
-                    <a href="#detail-calculator">Кредит</a>
-                    <a href="#detail-overview">Обзор</a>
+                    <a href="#" class="detail-quick-nav-link" data-target="detail-specs">Характеристики</a>
+                    <a href="#" class="detail-quick-nav-link" data-target="detail-calculator">Кредит</a>
+                    <a href="#" class="detail-quick-nav-link" data-target="detail-overview">Обзор</a>
                 </nav>
 
                 <section id="detail-specs" class="detail-section">
@@ -373,6 +373,35 @@ function renderCar(car) {
     initCreditCalculator(basePrice);
     setupActionBarLinks(title);
     initModalLogic(title);
+    initSectionTabs();
+}
+
+// Переключатель вкладок "Характеристики / Кредит / Обзор".
+// По умолчанию видны только характеристики, остальные секции скрыты
+// и появляются на их месте по клику — данные при этом уже загружены
+// заранее (одним запросом к API), просто не показываются, пока не нажата кнопка.
+function initSectionTabs() {
+    const links = document.querySelectorAll('.detail-quick-nav-link');
+    const sections = document.querySelectorAll('.detail-section');
+
+    function showSection(targetId) {
+        sections.forEach(sec => {
+            sec.style.display = sec.id === targetId ? '' : 'none';
+        });
+        links.forEach(link => {
+            link.classList.toggle('active', link.dataset.target === targetId);
+        });
+    }
+
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSection(link.dataset.target);
+        });
+    });
+
+    // Характеристики открыты по умолчанию
+    showSection('detail-specs');
 }
 
 function setupActionBarLinks(carTitle) {
