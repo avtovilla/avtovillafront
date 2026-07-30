@@ -247,24 +247,6 @@ function renderCar(car) {
     }
 
     container.innerHTML = `
-        <div class="car-hero-top">
-            <h1 class="car-detail-title">${title}</h1>
-            <div class="car-hero-price-row">
-                <div class="car-hero-price-block">
-                    <span class="detail-price-label">Цена в наличии</span>
-                    <strong class="car-hero-price">от ${formattedBase} ₸</strong>
-                </div>
-                <div class="car-hero-price-block">
-                    <span class="detail-price-label">В кредит ежемесячно</span>
-                    <strong class="car-hero-price accent">от ${formattedMonthly} ₸ / мес</strong>
-                </div>
-            </div>
-            <div class="car-hero-cta-row">
-                <button id="btn-order-car-fixed">Забронировать</button>
-                <button id="btn-test-drive-car" class="secondary">Записаться на тест-драйв</button>
-            </div>
-        </div>
-
         <div class="car-full-view">
             <div class="premium-gallery-container">
                 <div class="gallery-track-wrapper">${slidesMarkup}</div>
@@ -272,6 +254,24 @@ function renderCar(car) {
             </div>
 
             <div class="car-info-right-block">
+                <h1 class="car-detail-title">${title}</h1>
+
+                <div class="detail-price-card">
+                    <div class="detail-price-block">
+                        <span class="detail-price-label">Цена в наличии</span>
+                        <strong class="detail-price-value">от ${formattedBase} ₸</strong>
+                    </div>
+                    <div class="detail-price-block">
+                        <span class="detail-price-label">В кредит ежемесячно</span>
+                        <strong class="detail-price-value accent">от ${formattedMonthly} ₸ / мес</strong>
+                    </div>
+                </div>
+
+                <div class="car-hero-cta-row">
+                    <button id="btn-order-car-fixed">Забронировать</button>
+                    <button id="btn-test-drive-car" class="secondary">Тест-драйв</button>
+                </div>
+
                 <div class="gallery-bullets" style="display: ${isMultiImage ? 'flex' : 'none'};">
                     ${bulletsMarkup}
                 </div>
