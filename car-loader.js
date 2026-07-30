@@ -307,7 +307,10 @@ function renderCar(car) {
                         <div class="calc-row">
                             <div class="calc-label-wrapper">
                                 <span class="calc-label">Первоначальный взнос</span>
-                                <span class="calc-value" id="calc-downpayment-text">20%</span>
+                                <span class="calc-value">
+                                    <input type="text" id="calc-downpayment-input" class="calc-downpayment-input" inputmode="numeric"> ₸
+                                    <span id="calc-downpayment-percent">(20%)</span>
+                                </span>
                             </div>
                             <input type="range" id="slider-downpayment" class="calc-slider" min="10" max="70" step="5" value="20">
                         </div>
@@ -436,7 +439,8 @@ function initCreditCalculator(carPrice) {
     const sliderDownpayment = document.getElementById('slider-downpayment');
     const sliderTerm = document.getElementById('slider-term');
     const bankSelect = document.getElementById('calc-bank-select');
-    const textDownpayment = document.getElementById('calc-downpayment-text');
+    const downpaymentInput = document.getElementById('calc-downpayment-input');
+    const downpaymentPercent = document.getElementById('calc-downpayment-percent');
     const textTerm = document.getElementById('calc-term-text');
     const resultMonthlyPayment = document.getElementById('calc-monthly-payment-result');
     const summaryPrice = document.getElementById('calc-summary-price');
@@ -447,6 +451,10 @@ function initCreditCalculator(carPrice) {
 
     const currencyFormatter = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
 
+    // Текущая сумма первоначального взноса — единый источник истины,
+    // синхронизируется и со слайдером, и с полем ввода
+    let currentDownPayment = carPrice * (parseInt(sliderDownpayment.value, 10) / 100);
+
     function fillSliderTrack(slider) {
         const min = parseFloat(slider.min);
         const max = parseFloat(slider.max);
@@ -455,20 +463,33 @@ function initCreditCalculator(carPrice) {
         slider.style.background = `linear-gradient(90deg, #0074d9 0%, #00f7ff ${percent}%, rgba(255,255,255,0.08) ${percent}%, rgba(255,255,255,0.08) 100%)`;
     }
 
+    // Обновляет текстовое поле ввода и подпись процента под текущую сумму
+    function updateDownPaymentDisplay() {
+        const percent = carPrice > 0 ? (currentDownPayment / carPrice) * 100 : 0;
+        downpaymentInput.value = currencyFormatter.format(Math.round(currentDownPayment));
+        downpaymentPercent.innerText = `(${percent.toFixed(0)}%)`;
+    }
+
+    // Двигает слайдер под текущую сумму (визуально ограничен своим диапазоном,
+    // но сама сумма при этом не обрезается — расчёт всегда идёт по реальному числу)
+    function syncSliderPosition() {
+        const min = parseFloat(sliderDownpayment.min);
+        const max = parseFloat(sliderDownpayment.max);
+        const percent = carPrice > 0 ? (currentDownPayment / carPrice) * 100 : 0;
+        sliderDownpayment.value = Math.min(Math.max(percent, min), max);
+        fillSliderTrack(sliderDownpayment);
+    }
+
     function calculateCredit() {
-        const percent = parseInt(sliderDownpayment.value);
         const termMonths = parseInt(sliderTerm.value);
         const bankKey = bankSelect ? bankSelect.value : 'kaspi';
         const annualRate = BANK_RATES[bankKey] || 22;
 
-        const downPaymentAmount = carPrice * (percent / 100);
-        textDownpayment.innerText = `${currencyFormatter.format(downPaymentAmount)} ₸ (${percent}%)`;
         textTerm.innerText = `${termMonths} мес.`;
-        fillSliderTrack(sliderDownpayment);
         fillSliderTrack(sliderTerm);
 
         const monthlyRate = (annualRate / 12) / 100;
-        const loanBody = carPrice - downPaymentAmount;
+        const loanBody = carPrice - currentDownPayment;
         let monthlyPayment = loanBody > 0 ? loanBody * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1) : 0;
 
         resultMonthlyPayment.innerText = `${currencyFormatter.format(monthlyPayment)} ₸ / мес`;
@@ -477,9 +498,39 @@ function initCreditCalculator(carPrice) {
         if (summaryRate) summaryRate.innerText = `${annualRate}%`;
     }
 
-    sliderDownpayment.addEventListener('input', calculateCredit);
-    sliderTerm.addEventListener('input', calculateCredit);
+    // Движение слайдера — пересчитывает сумму взноса из процента
+    sliderDownpayment.addEventListener('input', () => {
+        const percent = parseInt(sliderDownpayment.value, 10);
+        currentDownPayment = carPrice * (percent / 100);
+        updateDownPaymentDisplay();
+        fillSliderTrack(sliderDownpayment);
+        calculateCredit();
+    });
+
+    // Ручной ввод суммы взноса — пересчитывает процент и двигает слайдер
+    downpaymentInput.addEventListener('input', () => {
+        const digitsOnly = downpaymentInput.value.replace(/[^\d]/g, '');
+        let amount = parseInt(digitsOnly || '0', 10);
+        if (isNaN(amount)) amount = 0;
+        if (amount > carPrice) amount = carPrice;
+
+        currentDownPayment = amount;
+        const percent = carPrice > 0 ? (amount / carPrice) * 100 : 0;
+        downpaymentPercent.innerText = `(${percent.toFixed(0)}%)`;
+        syncSliderPosition();
+        calculateCredit();
+    });
+
+    // При потере фокуса форматируем число красиво (с пробелами между разрядами)
+    downpaymentInput.addEventListener('blur', () => {
+        downpaymentInput.value = currencyFormatter.format(Math.round(currentDownPayment));
+    });
+
     if (bankSelect) bankSelect.addEventListener('change', calculateCredit);
+    sliderTerm.addEventListener('input', calculateCredit);
+
+    updateDownPaymentDisplay();
+    syncSliderPosition();
     calculateCredit();
 }
 
